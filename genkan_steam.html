@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>夜廻病院 Steam紹介ページ</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@300;400;700;900&family=Noto+Sans+JP:wght@300;400;700&family=Share+Tech+Mono&display=swap');
+
+  :root {
+    --bg: #0a0a0f;
+    --bg2: #0f0f18;
+    --red: #8b0000;
+    --red-bright: #cc2200;
+    --red-glow: #ff3300;
+    --white: #e8e0d5;
+    --grey: #6b6460;
+    --grey-light: #9a9090;
+    --accent: #4a3030;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 300;
+    overflow-x: hidden;
+    cursor: default;
+  }
+
+  /* ノイズテクスチャオーバーレイ */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.5;
+  }
+
+  /* ヒーローセクション */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    padding: 60px 20px;
+  }
+
+  .hero-bg {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: 
+      radial-gradient(ellipse at 50% 30%, rgba(139,0,0,0.15) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(139,0,0,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 70%, rgba(80,0,0,0.1) 0%, transparent 50%),
+      linear-gradient(180deg, #0a0a0f 0%, #0d0810 50%, #0a0a0f 100%);
+  }
+
+  /* 縦線の演出 */
+  .hero-lines {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    overflow: hidden;
+  }
+
+  .hero-lines::before,
+  .hero-lines::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    background: linear-gradient(180deg, transparent, rgba(139,0,0,0.3), transparent);
+    animation: lineFlicker 8s infinite;
+  }
+
+  .hero-lines::before { left: 20%; animation-delay: 0s; }
+  .hero-lines::after { right: 20%; animation-delay: 4s; }
+
+  @keyframes lineFlicker {
+    0%, 100% { opacity: 0; }
+    50% { opacity: 1; }
+    51% { opacity: 0.3; }
+    52% { opacity: 1; }
+  }
+
+  /* タイトル */
+  .title-wrapper {
+    position: relative;
+    text-align: center;
+    z-index: 10;
+    margin-bottom: 40px;
+  }
+
+  .title-jp {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(80px, 15vw, 160px);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    color: var(--white);
+    position: relative;
+    display: block;
+    line-height: 1;
+    animation: titleReveal 2s ease forwards;
+  }
+
+  .title-jp::before {
+    content: '夜廻病院';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    color: var(--red-bright);
+    clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    transform: translateX(-2px);
+    opacity: 0.6;
+    animation: glitch 6s infinite;
+  }
+
+  .title-jp::after {
+    content: '夜廻病院';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    color: #003366;
+    clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    transform: translateX(2px);
+    opacity: 0.4;
+    animation: glitch2 6s infinite;
+  }
+
+  @keyframes glitch {
+    0%, 90%, 100% { transform: translateX(-2px); opacity: 0.6; }
+    92% { transform: translateX(4px); opacity: 0.8; }
+    94% { transform: translateX(-4px); opacity: 0.4; }
+    96% { transform: translateX(2px); opacity: 0.6; }
+  }
+
+  @keyframes glitch2 {
+    0%, 90%, 100% { transform: translateX(2px); opacity: 0.4; }
+    92% { transform: translateX(-4px); opacity: 0.6; }
+    94% { transform: translateX(4px); opacity: 0.2; }
+    96% { transform: translateX(-2px); opacity: 0.4; }
+  }
+
+  @keyframes titleReveal {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .title-en {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: clamp(14px, 2vw, 20px);
+    letter-spacing: 0.5em;
+    color: var(--grey-light);
+    display: block;
+    margin-top: 10px;
+    animation: fadeIn 2s 0.5s ease forwards;
+    opacity: 0;
+  }
+
+  @keyframes fadeIn {
+    to { opacity: 1; }
+  }
+
+  /* キャッチコピー */
+  .catchcopy {
+    position: relative;
+    z-index: 10;
+    text-align: center;
+    max-width: 700px;
+    animation: fadeIn 2s 1s ease forwards;
+    opacity: 0;
+  }
+
+  .catchcopy-main {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(18px, 3vw, 28px);
+    font-weight: 400;
+    color: var(--white);
+    line-height: 2;
+    margin-bottom: 20px;
+  }
+
+  .catchcopy-main em {
+    color: var(--red-bright);
+    font-style: normal;
+    text-shadow: 0 0 20px rgba(204,34,0,0.5);
+  }
+
+  .catchcopy-sub {
+    font-size: clamp(13px, 1.5vw, 15px);
+    color: var(--grey-light);
+    letter-spacing: 0.1em;
+    line-height: 2;
+  }
+
+  /* 区切り線 */
+  .divider {
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--red), transparent);
+    opacity: 0.4;
+  }
+
+  /* セクション共通 */
+  section {
+    padding: 80px 20px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.4em;
+    color: var(--red-bright);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-label::before {
+    content: '';
+    display: inline-block;
+    width: 30px;
+    height: 1px;
+    background: var(--red-bright);
+  }
+
+  .section-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(24px, 4vw, 40px);
+    font-weight: 700;
+    margin-bottom: 40px;
+    line-height: 1.4;
+  }
+
+  /* あらすじ */
+  .synopsis {
+    background: var(--bg2);
+    border-left: 2px solid var(--red);
+    padding: 80px 20px;
+  }
+
+  .synopsis-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .synopsis-text {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(15px, 2vw, 18px);
+    line-height: 2.4;
+    color: var(--white);
+    margin-bottom: 20px;
+  }
+
+  .synopsis-text em {
+    color: var(--red-bright);
+    font-style: normal;
+    font-weight: 700;
+  }
+
+  .synopsis-reveal {
+    margin-top: 50px;
+    padding: 30px;
+    border: 1px solid rgba(139,0,0,0.3);
+    background: rgba(139,0,0,0.05);
+    position: relative;
+  }
+
+  .synopsis-reveal::before {
+    content: '▶ 真相';
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--red-bright);
+    position: absolute;
+    top: -8px;
+    left: 20px;
+    background: var(--bg2);
+    padding: 0 10px;
+  }
+
+  .reveal-text {
+    font-family: 'Noto Serif JP', serif;
+    font-size: clamp(14px, 1.8vw, 16px);
+    line-height: 2.2;
+    color: var(--grey-light);
+  }
+
+  .reveal-text strong {
+    color: var(--white);
+    font-weight: 700;
+  }
+
+  /* 特徴グリッド */
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 2px;
+    margin-top: 10px;
+  }
+
+  .feature-card {
+    background: var(--bg2);
+    padding: 36px 30px;
+    border: 1px solid rgba(255,255,255,0.04);
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s;
+  }
+
+  .feature-card:hover {
+    border-color: rgba(139,0,0,0.4);
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 2px;
+    height: 0;
+    background: var(--red-bright);
+    transition: height 0.3s;
+  }
+
+  .feature-card:hover::before {
+    height: 100%;
+  }
+
+  .feature-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    color: var(--red-bright);
+    letter-spacing: 0.3em;
+    margin-bottom: 16px;
+    opacity: 0.8;
+  }
+
+  .feature-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 14px;
+    color: var(--white);
+  }
+
+  .feature-desc {
+    font-size: 14px;
+    line-height: 2;
+    color: var(--grey-light);
+  }
+
+  /* エンド一覧 */
+  .endings {
+    background: var(--bg2);
+    padding: 80px 20px;
+  }
+
+  .endings-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .ending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .ending-item {
+    display: flex;
+    align-items: stretch;
+    background: rgba(255,255,255,0.02);
+    border: 1px solid rgba(255,255,255,0.04);
+    overflow: hidden;
+    transition: background 0.2s;
+  }
+
+  .ending-item:hover {
+    background: rgba(255,255,255,0.04);
+  }
+
+  .ending-tag {
+    width: 4px;
+    flex-shrink: 0;
+  }
+
+  .ending-tag.happy { background: #2a6644; }
+  .ending-tag.bad { background: var(--red); }
+
+  .ending-content {
+    padding: 24px 28px;
+    flex: 1;
+  }
+
+  .ending-name {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .ending-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    padding: 3px 8px;
+    border: 1px solid;
+    font-weight: 400;
+  }
+
+  .ending-badge.happy {
+    color: #4a9970;
+    border-color: #2a6644;
+  }
+
+  .ending-badge.bad {
+    color: #cc5544;
+    border-color: var(--red);
+  }
+
+  .ending-badge.secret {
+    color: var(--grey);
+    border-color: var(--grey);
+  }
+
+  .ending-desc {
+    font-size: 14px;
+    line-height: 1.9;
+    color: var(--grey-light);
+  }
+
+  .ending-desc em {
+    color: var(--grey-light);
+    font-style: italic;
+    font-size: 12px;
+  }
+
+  /* スペック */
+  .specs {
+    padding: 80px 20px;
+  }
+
+  .specs-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .specs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2px;
+  }
+
+  .spec-item {
+    background: var(--bg2);
+    padding: 28px 24px;
+    border: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .spec-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    color: var(--red-bright);
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+
+  .spec-value {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--white);
+  }
+
+  .spec-note {
+    font-size: 12px;
+    color: var(--grey);
+    margin-top: 6px;
+    line-height: 1.6;
+  }
+
+  /* フッター */
+  footer {
+    border-top: 1px solid rgba(255,255,255,0.05);
+    padding: 40px 20px;
+    text-align: center;
+  }
+
+  .footer-title {
+    font-family: 'Noto Serif JP', serif;
+    font-size: 32px;
+    font-weight: 900;
+    margin-bottom: 8px;
+    color: var(--white);
+  }
+
+  .footer-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.4em;
+    color: var(--grey);
+  }
+
+  /* スクロールアニメーション */
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* 警告テキスト */
+  .warning {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--red-bright);
+    text-align: center;
+    padding: 16px;
+    border: 1px solid rgba(139,0,0,0.3);
+    background: rgba(139,0,0,0.05);
+    margin: 40px auto;
+    max-width: 600px;
+    animation: pulse 3s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.8; }
+    50% { opacity: 1; border-color: rgba(139,0,0,0.6); }
+  }
+
+  /* スクロールバー */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--red); }
+</style>
+</head>
+<body>
+
+<!-- ヒーロー -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+
+  <div class="title-wrapper">
+    <span class="title-jp">夜廻病院</span>
+    <span class="title-en">Y O M A W A R I B Y O U I N</span>
+  </div>
+
+  <div class="catchcopy">
+    <p class="catchcopy-main">
+      気づいたら、病院にいた。<br>
+      何かが徘徊し、逃げ道はない。<br>
+      <em>ここは、いったい何なのか。</em>
+    </p>
+    <p class="catchcopy-sub">
+      1〜4人プレイ対応　／　制限時間90分　／　6種のエンディング
+    </p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- あらすじ -->
+<div class="synopsis">
+  <div class="synopsis-inner">
+    <div class="section-label fade-up">STORY</div>
+    <h2 class="section-title fade-up">あらすじ</h2>
+
+    <p class="synopsis-text fade-up">
+      薄暗い病室のベッドの上で目が覚めた。<br>
+      手元には自分の筆跡のメモ。<br>
+      <em>「ここから出てはいけない」</em><br>
+      書いた記憶がない。
+    </p>
+
+    <p class="synopsis-text fade-up">
+      院内放送が流れる。<br>
+      <em>「消灯まで90分です。病室にお戻りください。」</em>
+    </p>
+
+    <p class="synopsis-text fade-up">
+      廊下に出ると、同じ状況で目覚めた見知らぬ人たちがいた。<br>
+      何かが徘徊し、黒い人影が廊下を歩き続けている。<br>
+      脱出しようとするたびに、同じ廊下に戻ってくる。
+    </p>
+
+    <p class="synopsis-text fade-up">
+      カルテに、自分と同じ名前があった。<br>
+      鏡の中の自分が、病院着を着ていた。<br>
+      <em>——ここは、本当に廃病院なのか。</em>
+    </p>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- 特徴 -->
+<section>
+  <div class="section-label fade-up">FEATURES</div>
+  <h2 class="section-title fade-up">ゲームの特徴</h2>
+
+  <div class="features-grid">
+    <div class="feature-card fade-up">
+      <div class="feature-num">01</div>
+      <div class="feature-title">幻覚システム</div>
+      <div class="feature-desc">プレイヤーごとに幻覚レベルが異なります。見えているものが人によって違い、「そこに誰かいる」「誰もいないけど」という会話が生まれます。時間が経つほど現実と幻覚の区別がつかなくなっていきます。</div>
+    </div>
+
+    <div class="feature-card fade-up">
+      <div class="feature-num">02</div>
+      <div class="feature-title">疑心暗鬼</div>
+      <div class="feature-desc">幻覚レベルが高くなると、仲間がNPCに見える瞬間があります。信じるべきか、疑うべきか。間違えれば最悪のエンドへ近づきます。</div>
+    </div>
+
+    <div class="feature-card fade-up">
+      <div class="feature-num">03</div>
+      <div class="feature-title">黒い人影</div>
+      <div class="feature-desc">各エリアに1体ずつ、止まらずに歩き続けます。見つかると元の部屋に連れ戻されます。幻覚レベルが低いと普通の人間に見えますが、高くなると黒く歪んだ人影に見えます。</div>
+    </div>
+
+    <div class="feature-card fade-up">
+      <div class="feature-num">04</div>
+      <div class="feature-title">制限時間90分</div>
+      <div class="feature-desc">時間が経つほど幻覚が激しくなります。残り時間は院内放送だけが知らせます。焦れば焦るほど、正しい判断ができなくなっていきます。</div>
+    </div>
+
+    <div class="feature-card fade-up">
+      <div class="feature-num">05</div>
+      <div class="feature-title">4人それぞれの結末</div>
+      <div class="feature-desc">プレイヤーそれぞれが個別のエンドを迎えます。同じゲームをプレイしているのに、全員が違う結末を迎えることがあります。</div>
+    </div>
+
+    <div class="feature-card fade-up">
+      <div class="feature-num">06</div>
+      <div class="feature-title">Discord連携（オプション）</div>
+      <div class="feature-desc">Discordのボイスチャットと連動します。叫ぶと敵が反応し、静寂を保つと幻覚が薄れます。Discord なしでも全機能でプレイ可能です。</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- エンディング -->
+<div class="endings">
+  <div class="endings-inner">
+    <div class="section-label fade-up">ENDINGS</div>
+    <h2 class="section-title fade-up">6つの結末</h2>
+
+    <div class="warning fade-up">
+      ⚠ &nbsp; あなたは真実に辿り着けるか &nbsp; ⚠
+    </div>
+
+    <div class="ending-list fade-up">
+      <div class="ending-item">
+        <div class="ending-tag happy"></div>
+        <div class="ending-content">
+          <div class="ending-name">
+            覚醒
+            <span class="ending-badge happy">HAPPY END</span>
+          </div>
+          <div class="ending-desc">
+            <em>— 詳細はプレイして確かめてください</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="ending-item">
+        <div class="ending-tag bad"></div>
+        <div class="ending-content">
+          <div class="ending-name">
+            ？？？
+            <span class="ending-badge bad">BAD END</span>
+          </div>
+          <div class="ending-desc">
+            <em>— 詳細はプレイして確かめてください</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="ending-item">
+        <div class="ending-tag bad"></div>
+        <div class="ending-content">
+          <div class="ending-name">
+            ？？？
+            <span class="ending-badge bad">BAD END</span>
+            <span class="ending-badge secret">複数プレイ限定</span>
+          </div>
+          <div class="ending-desc">
+            <em>— 詳細はプレイして確かめてください</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="ending-item">
+        <div class="ending-tag bad"></div>
+        <div class="ending-content">
+          <div class="ending-name">
+            ？？？
+            <span class="ending-badge bad">BAD END</span>
+          </div>
+          <div class="ending-desc">
+            <em>— 詳細はプレイして確かめてください</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="ending-item">
+        <div class="ending-tag bad"></div>
+        <div class="ending-content">
+          <div class="ending-name">
+            ？？？
+            <span class="ending-badge bad">BAD END</span>
+          </div>
+          <div class="ending-desc">
+            <em>— 詳細はプレイして確かめてください</em>
+          </div>
+        </div>
+      </div>
+
+      <div class="ending-item">
+        <div class="ending-tag bad"></div>
+        <div class="ending-content">
+          <div class="ending-name">
+            ？？？
+            <span class="ending-badge bad">BAD END</span>
+          </div>
+          <div class="ending-desc">
+            <em>— 詳細はプレイして確かめてください</em>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- スペック -->
+<div class="specs">
+  <div class="specs-inner">
+    <div class="section-label fade-up">SPEC</div>
+    <h2 class="section-title fade-up">ゲーム情報</h2>
+
+    <div class="specs-grid fade-up">
+      <div class="spec-item">
+        <div class="spec-label">PLAYERS</div>
+        <div class="spec-value">1 〜 4人</div>
+        <div class="spec-note">オンラインマルチプレイ対応<br>1人プレイも可能</div>
+      </div>
+
+      <div class="spec-item">
+        <div class="spec-label">TIME LIMIT</div>
+        <div class="spec-value">90分</div>
+        <div class="spec-note">1セッションあたり<br>時間切れで強制エンド</div>
+      </div>
+
+      <div class="spec-item">
+        <div class="spec-label">ENDINGS</div>
+        <div class="spec-value">6種</div>
+        <div class="spec-note">プレイヤーごとに個別の結末<br>悟られないバッドエンドあり</div>
+      </div>
+
+      <div class="spec-item">
+        <div class="spec-label">PERSPECTIVE</div>
+        <div class="spec-value">一人称視点</div>
+        <div class="spec-note">1990年代の日本の精神病院が舞台</div>
+      </div>
+
+      <div class="spec-item">
+        <div class="spec-label">PLATFORM</div>
+        <div class="spec-value">Steam</div>
+        <div class="spec-note">Windows対応<br>Steam P2Pマルチプレイ</div>
+      </div>
+
+      <div class="spec-item">
+        <div class="spec-label">DISCORD</div>
+        <div class="spec-value">連携対応</div>
+        <div class="spec-note">オプション機能<br>なしでもフル機能でプレイ可能</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- フッター -->
+<footer>
+  <div class="footer-title">夜廻病院</div>
+  <div class="footer-sub">Y O M A W A R I B Y O U I N &nbsp;／&nbsp; COMING SOON</div>
+</footer>
+
+<script>
+  // スクロールアニメーション
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('visible');
+        }, i * 80);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
